@@ -9,6 +9,7 @@ setup(
     author_email='b.like.no.other@gmail.com',
     url='https://github.com/blikenoother/aiourlshortener',
     description='asynchronous python3 lib to short long url',
+    long_description=open('README.md').read(),
     packages=find_packages(include=('*')),
     keywords='asynchronous url shortener',
     install_requires=['aiohttp==2.0.2'],
