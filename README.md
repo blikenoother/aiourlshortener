@@ -4,19 +4,13 @@ aiourlshortener is a [asyncio](https://pypi.python.org/pypi/asyncio) python3 com
 
 # Installing
 
-clone repository and just follow this steps
-
 ```
-git clone git@github.com:blikenoother/aiourlshortener.git
-cd aiourlshortener
-python3 setup.py install
+pip3 install aiourlshortener
 ```
 
-Installing via pip3 package manager
-
-```
-pip3 install -e git+git@github.com:blikenoother/aiourlshortener.git#egg=aiourlshortener
-```
+# Requirements
+* [asyncio](https://pypi.python.org/pypi/asyncio) or Python 3.4+
+* [aiohttp](https://pypi.python.org/pypi/aiohttp)
 
 # Usage
 
