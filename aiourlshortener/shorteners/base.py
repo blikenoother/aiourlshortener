@@ -35,7 +35,10 @@ class BaseShortener(object):
 
     @coroutine
     def close(self):
-        yield from self._session.close()
+        try:
+            yield from self._session.close()
+        except TypeError:
+            pass
 
     @classmethod
     def __subclasshook__(cls, c):

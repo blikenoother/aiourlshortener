@@ -12,7 +12,7 @@ setup(
     long_description=open('README.md').read(),
     packages=find_packages(include=('*')),
     keywords='asynchronous url shortener',
-    install_requires=['aiohttp==2.0.2'],
+    install_requires=['aiohttp'],
     classifiers=['Development Status :: 5 - Production/Stable', 'Intended Audience :: Developers',
                  'Operating System :: OS Independent', 'Programming Language :: Python :: 3',
                  'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
