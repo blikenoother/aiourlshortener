@@ -25,7 +25,6 @@ class Bitly(BaseShortener):
         params = {'access_token': self.access_token, 'longUrl': url, 'format': 'json'}
         response = yield from self._get(self._short_url, params=params)
         response = yield from response.json()
-        yield from self.close()
         if 'data' in response and isinstance(response['data'], dict) and 'url' in response['data']:
             return response['data']['url']
         raise ShorteningError('There was an error shortening this url: {}'.format(response))
@@ -35,7 +34,6 @@ class Bitly(BaseShortener):
         params = {'access_token': self.access_token, 'link': url, 'format': 'json'}
         response = yield from self._get(self._expand_url, params=params)
         response = yield from response.json()
-        yield from self.close()
         if 'data' in response and isinstance(response['data'], dict) and 'original_url' in response['data']:
             return response['data']['original_url']
         raise ExpandingError('There was an error expanding this url: {}'.format(response))

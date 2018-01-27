@@ -1,3 +1,5 @@
+import atexit
+
 from abc import abstractmethod
 import aiohttp
 from asyncio import coroutine
@@ -8,8 +10,10 @@ class BaseShortener(object):
     Base class for all Shorteners
     """
     api_url = None
+    _session = None
 
     def __init__(self, **kwargs):
+        atexit.register(self.close())
         self._session = aiohttp.ClientSession(connector=aiohttp.TCPConnector(use_dns_cache=True))
         self.kwargs = kwargs
 
@@ -35,10 +39,8 @@ class BaseShortener(object):
 
     @coroutine
     def close(self):
-        try:
+        if self._session is not None:
             yield from self._session.close()
-        except TypeError:
-            pass
 
     @classmethod
     def __subclasshook__(cls, c):
