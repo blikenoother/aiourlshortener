@@ -1,11 +1,21 @@
+import codecs
+import os
+import re
 from setuptools import setup, find_packages
-import aiourlshortener
 
+_PACKAGE_FILE = os.path.join(os.path.dirname(__file__),
+                             'aiourlshortener',
+                             '__init__.py')
+with codecs.open(_PACKAGE_FILE, 'r', 'utf-8') as package_reader:
+    _RAW_PACKAGE_METADATA = package_reader.read()
+
+PACKAGE_METADATA = dict(re.findall("(__[a-z]+__) = '([^']+)'",
+                                    _RAW_PACKAGE_METADATA))
 setup(
     name='aiourlshortener',
-    version=aiourlshortener.__version__,
-    license=aiourlshortener.__license__,
-    author=aiourlshortener.__author__,
+    version=PACKAGE_METADATA['__version__'],
+    license=PACKAGE_METADATA['__license__'],
+    author=PACKAGE_METADATA['__author__'],
     author_email='b.like.no.other@gmail.com',
     url='https://github.com/blikenoother/aiourlshortener',
     description='asynchronous python3 lib to short long url',
