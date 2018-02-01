@@ -1,12 +1,12 @@
+from abc import abstractmethod, ABC
 import asyncio
-from abc import abstractmethod
 import aiohttp
 from asyncio import coroutine
 
 from ..exceptions import FetchError
 
 
-class BaseShortener(object):
+class BaseShortener(ABC):
     """
     Base class for all Shorteners
     """
