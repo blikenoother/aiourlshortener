@@ -26,7 +26,6 @@ class Google(BaseShortener):
         params = {'key': self.api_key}
         response = yield from self._post(self.api_url, data=json.dumps(data), params=params, headers=self._headers)
         response = yield from response.json()
-        yield from self.close()
         if 'id' in response:
             return response['id']
         raise ShorteningError('There was an error shortening this url: {}'.format(response))
@@ -36,7 +35,6 @@ class Google(BaseShortener):
         params = {'key': self.api_key, 'shortUrl': url}
         response = yield from self._get(self.api_url, params=params, headers=self._headers)
         response = yield from response.json()
-        yield from self.close()
         if 'longUrl' in response:
             return response['longUrl']
         raise ExpandingError('There was an error expanding this url: {}'.format(response))

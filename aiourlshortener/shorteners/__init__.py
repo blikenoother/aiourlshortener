@@ -70,7 +70,12 @@ class Shortener(object):
         if not self.kwargs.get('timeout'):
             self.kwargs['timeout'] = 10
 
-        self.shorten = yield from self._class(**self.kwargs).short(url)
+        instance = self._class(**self.kwargs)
+        try:
+            self.shorten = yield from instance.short(url)
+        finally:
+            yield from instance.close()
+
         return self.shorten
 
     @coroutine
@@ -90,5 +95,10 @@ class Shortener(object):
         if not self.kwargs.get('timeout'):
             self.kwargs['timeout'] = 10
 
-        self.expanded = yield from self._class(**self.kwargs).expand(url)
+        instance = self._class(**self.kwargs)
+        try:
+            self.expanded = yield from instance.expand(url)
+        finally:
+            yield from instance.close()
+
         return self.expanded
