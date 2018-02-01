@@ -5,8 +5,10 @@ Needs API_KEY
 import json
 from asyncio import coroutine
 
+import aiohttp
+
 from .base import BaseShortener
-from ..exceptions import ShorteningError, ExpandingError
+from ..exceptions import ShorteningError, ExpandingError, FetchError
 
 
 class Google(BaseShortener):
@@ -24,17 +26,29 @@ class Google(BaseShortener):
     def short(self, url: str) -> str:
         data = {'longUrl': url}
         params = {'key': self.api_key}
-        response = yield from self._post(self.api_url, data=json.dumps(data), params=params, headers=self._headers)
-        response = yield from response.json()
+        response = {}
+        try:
+            response = yield from self._post(self.api_url, data=json.dumps(data), params=params, headers=self._headers)
+            response = yield from response.json()
+        except (aiohttp.ClientError, FetchError) as err:
+            raise ShorteningError('There was an error shortening the url "{}": {}'.format(url,repr(err)))
+
         if 'id' in response:
             return response['id']
-        raise ShorteningError('There was an error shortening this url: {}'.format(response))
+
+        raise ShorteningError('Detected an api change for Google')
 
     @coroutine
     def expand(self, url: str) -> str:
         params = {'key': self.api_key, 'shortUrl': url}
-        response = yield from self._get(self.api_url, params=params, headers=self._headers)
-        response = yield from response.json()
+        response = {}
+        try:
+            response = yield from self._get(self.api_url, params=params, headers=self._headers)
+            response = yield from response.json()
+        except (aiohttp.ClientError, FetchError) as err:
+            raise ExpandingError('There was an error expanding the url "{}": {}'.format(url, repr(err)))
+
         if 'longUrl' in response:
             return response['longUrl']
-        raise ExpandingError('There was an error expanding this url: {}'.format(response))
+
+        raise ExpandingError('Detected an api change for Google')
