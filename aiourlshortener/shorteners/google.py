@@ -26,13 +26,13 @@ class Google(BaseShortener):
     def short(self, url: str) -> str:
         data = {'longUrl': url}
         params = {'key': self.api_key}
+        response = {}
         try:
             response = yield from self._post(self.api_url, data=json.dumps(data), params=params, headers=self._headers)
             response = yield from response.json()
         except (aiohttp.ClientError, FetchError) as err:
             raise ShorteningError('There was an error shortening the url "{}": {}'.format(url,repr(err)))
 
-        yield from self.close()
         if 'id' in response:
             return response['id']
 
@@ -41,13 +41,13 @@ class Google(BaseShortener):
     @coroutine
     def expand(self, url: str) -> str:
         params = {'key': self.api_key, 'shortUrl': url}
+        response = {}
         try:
             response = yield from self._get(self.api_url, params=params, headers=self._headers)
             response = yield from response.json()
         except (aiohttp.ClientError, FetchError) as err:
             raise ExpandingError('There was an error expanding the url "{}": {}'.format(url, repr(err)))
 
-        yield from self.close()
         if 'longUrl' in response:
             return response['longUrl']
 

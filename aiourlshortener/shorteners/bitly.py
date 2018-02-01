@@ -25,13 +25,13 @@ class Bitly(BaseShortener):
     @coroutine
     def short(self, url: str) -> str:
         params = {'access_token': self.access_token, 'longUrl': url, 'format': 'json'}
+        response = {}
         try:
             response = yield from self._get(self._short_url, params=params)
             response = yield from response.json()
         except (aiohttp.ClientError, FetchError) as err:
             raise ShorteningError('There was an error shortening the url "{}": {}'.format(url, repr(err)))
 
-        yield from self.close()
         if 'data' in response and isinstance(response['data'], dict) and 'url' in response['data']:
             return response['data']['url']
 
@@ -40,13 +40,13 @@ class Bitly(BaseShortener):
     @coroutine
     def expand(self, url: str) -> str:
         params = {'access_token': self.access_token, 'link': url, 'format': 'json'}
+        response = {}
         try:
             response = yield from self._get(self._expand_url, params=params)
             response = yield from response.json()
         except (aiohttp.ClientError, FetchError) as err:
             raise ExpandingError('There was an error expanding the url "{}": {}'.format(url, repr(err)))
 
-        yield from self.close()
         if 'data' in response and isinstance(response['data'], dict) and 'original_url' in response['data']:
             return response['data']['original_url']
 
