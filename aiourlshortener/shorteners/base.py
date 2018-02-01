@@ -1,6 +1,9 @@
+import asyncio
 from abc import abstractmethod
 import aiohttp
 from asyncio import coroutine
+
+from ..exceptions import FetchError
 
 
 class BaseShortener(object):
@@ -15,14 +18,23 @@ class BaseShortener(object):
 
     @coroutine
     def _get(self, url: str, params=None, headers=None):
-        with aiohttp.Timeout(self.kwargs['timeout']):
-            response = yield from self._session.get(url, params=params, headers=headers)
-            return response
+        response = yield from self._fetch('GET', url, params=params, headers=headers)
+        return response
 
     @coroutine
     def _post(self, url: str, data=None, params=None, headers=None):
-        with aiohttp.Timeout(self.kwargs['timeout']):
-            response = yield from self._session.post(url, data=data, params=params, headers=headers)
+        response = yield from self._fetch('POST', url, data=data, params=params, headers=headers)
+        return response
+
+    @coroutine
+    def _fetch(self, method: str, url: str, data=None, params=None, headers=None):
+        try:
+            with aiohttp.Timeout(self.kwargs['timeout']):
+                response = yield from self._session.request(method, url, data=data, params=params, headers=headers)
+                response.raise_for_status()
+        except (aiohttp.ClientError, asyncio.TimeoutError):
+            raise FetchError()
+        else:
             return response
 
     @abstractmethod
