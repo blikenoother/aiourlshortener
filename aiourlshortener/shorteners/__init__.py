@@ -44,7 +44,7 @@ class Shortener(object):
             self._class = _shorten_class[self.engine]
         else:
             raise UnknownAioUrlShortenerError('Please enter a valid shortener. {} class does not exist'.
-                                              format(self.engine))
+                                              format(engine))
 
         for key, item in list(kwargs.items()):
             setattr(self, key, item)
