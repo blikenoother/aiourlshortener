@@ -1,9 +1,9 @@
-from abc import abstractmethod
+from abc import abstractmethod, ABC
 import aiohttp
 from asyncio import coroutine
 
 
-class BaseShortener(object):
+class BaseShortener(ABC):
     """
     Base class for all Shorteners
     """
@@ -39,10 +39,3 @@ class BaseShortener(object):
             yield from self._session.close()
         except TypeError:
             pass
-
-    @classmethod
-    def __subclasshook__(cls, c):
-        if cls is BaseShortener:
-            if all(hasattr(c, name) for name in ('short', 'expand')):
-                return True
-        return NotImplemented

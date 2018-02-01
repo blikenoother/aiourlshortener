@@ -15,7 +15,7 @@ for file in os.listdir(_path):
     _shorten = SourceFileLoader('aiourlshortener.shorteners.', '{}/{}'.format(_path, file)).load_module()
     for attr in dir(_shorten):
         tmp_cls = getattr(_shorten, attr)
-        if inspect.isclass(tmp_cls) and attr != 'BaseShortener' and issubclass(tmp_cls, BaseShortener):
+        if attr != 'BaseShortener' and inspect.isclass(tmp_cls) and issubclass(tmp_cls, BaseShortener) and not inspect.isabstract(tmp_cls):
             _shorten_class[attr] = tmp_cls
 
 __all__ = ['Shorteners', 'Shortener']
@@ -36,7 +36,7 @@ class Shortener(object):
         self.shorten = None
         self.expanded = None
 
-        if inspect.isclass(engine) and issubclass(engine, BaseShortener):
+        if inspect.isclass(engine) and issubclass(engine, BaseShortener) and not inspect.isabstract(engine):
             self.engine = engine.__name__
             self._class = engine
         elif engine in _shorten_class:
