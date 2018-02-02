@@ -16,10 +16,8 @@ class Bitly(BaseShortener):
     _short_url = '{}/shorten'.format(api_url)
     _expand_url = '{}/link/info'.format(api_url)
 
-    def __init__(self, **kwargs):
-        if not kwargs.get('access_token', False):
-            raise TypeError('access_token missing from kwargs')
-        self.access_token = kwargs['access_token']
+    def __init__(self, access_token, **kwargs):
+        self.access_token = access_token
         super(Bitly, self).__init__(**kwargs)
 
     @coroutine

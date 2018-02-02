@@ -16,7 +16,7 @@ class BaseShortener(ABC):
     api_url = None
     _session = None
 
-    def __init__(self, timeout=DEFAULT_TIMEOUT, **kwargs):
+    def __init__(self, timeout=DEFAULT_TIMEOUT):
         self._session = aiohttp.ClientSession(
             connector=aiohttp.TCPConnector(use_dns_cache=True),
             conn_timeout=timeout,
