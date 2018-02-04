@@ -6,8 +6,13 @@
 #
 aiohttp==2.3.10
 async-timeout==2.0.0      # via aiohttp
+attrs==17.4.0             # via pytest
 chardet==3.0.4            # via aiohttp
 idna-ssl==1.0.0           # via aiohttp
 idna==2.6                 # via idna-ssl, yarl
 multidict==4.1.0          # via aiohttp, yarl
+pluggy==0.6.0             # via pytest
+py==1.5.2                 # via pytest
+pytest==3.4.0
+six==1.11.0               # via pytest
 yarl==1.1.0               # via aiohttp

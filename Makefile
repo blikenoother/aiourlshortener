@@ -33,6 +33,18 @@ venv-dev: venv-create
 ### </ venv utils > ###
 
 
+### < tests > ###
+
+# check the venv and run the test-suite
+.PHONY: test
+test:
+	@$(MAKE) -s venv-dev > /dev/null
+	@$(MAKE) -s clean > /dev/null
+	@$(MAKE) -s .test
+
+### </ tests > ###
+
+
 ### < misc > ###
 
 # remove the local cache and compiled python files from local directories
@@ -81,6 +93,13 @@ venv-create:
 		echo "Done"; fi
 	@if [ ! -d .cache ]; then mkdir .cache; fi
 
+# run the test-suite
+.PHONY: .test
+.test:
+	@echo "Tests: started"
+	@$(pytest) tests
+	@echo "Tests: all completed"
+
 ### </ internal > ###
 
 
@@ -111,5 +130,6 @@ endif
 
 pip = $(venv)/bin/pip $(f_quiet) $(f_verbose)
 pip-compile = $(venv)/bin/pip-compile
+pytest = $(venv)/bin/pytest $(f_quiet) $(f_verbose)
 
 ### </ aliases > ###
