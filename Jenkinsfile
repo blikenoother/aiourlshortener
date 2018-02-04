@@ -21,6 +21,10 @@ def get_env() {
 
 def get_credentials() {
     return [
+        string(credentialsId: 'AIOURLSHORTENER_BITLY',
+               variable: 'AIOURLSHORTENER_BITLY'),
+        string(credentialsId: 'AIOURLSHORTENER_GOOGLE',
+               variable: 'AIOURLSHORTENER_GOOGLE'),
     ]
 }
 
