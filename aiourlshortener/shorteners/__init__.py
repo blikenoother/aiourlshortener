@@ -67,9 +67,6 @@ class Shortener(object):
         url_validator(url)
         self.expanded = url
 
-        if not self.kwargs.get('timeout'):
-            self.kwargs['timeout'] = 10
-
         instance = self._class(**self.kwargs)
         try:
             self.shorten = yield from instance.short(url)
@@ -91,9 +88,6 @@ class Shortener(object):
         """
         url_validator(url)
         self.shorten = url
-
-        if not self.kwargs.get('timeout'):
-            self.kwargs['timeout'] = 10
 
         instance = self._class(**self.kwargs)
         try:

@@ -16,10 +16,8 @@ class Google(BaseShortener):
 
     _headers = {'content-type': 'application/json'}
 
-    def __init__(self, **kwargs):
-        if not kwargs.get('api_key', False):
-            raise TypeError('api_key missing from kwargs')
-        self.api_key = kwargs['api_key']
+    def __init__(self, api_key, **kwargs):
+        self.api_key = api_key
         super(Google, self).__init__(**kwargs)
 
     @coroutine
