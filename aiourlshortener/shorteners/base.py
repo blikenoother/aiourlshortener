@@ -6,6 +6,9 @@ from asyncio import coroutine
 from ..exceptions import FetchError
 
 
+DEFAULT_TIMEOUT = 10
+
+
 class BaseShortener(ABC):
     """
     Base class for all Shorteners
@@ -13,9 +16,11 @@ class BaseShortener(ABC):
     api_url = None
     _session = None
 
-    def __init__(self, **kwargs):
-        self._session = aiohttp.ClientSession(connector=aiohttp.TCPConnector(use_dns_cache=True))
-        self.kwargs = kwargs
+    def __init__(self, timeout=DEFAULT_TIMEOUT):
+        self._session = aiohttp.ClientSession(
+            connector=aiohttp.TCPConnector(use_dns_cache=True),
+            conn_timeout=timeout,
+        )
 
     @coroutine
     def _get(self, url: str, params=None, headers=None):
@@ -30,9 +35,8 @@ class BaseShortener(ABC):
     @coroutine
     def _fetch(self, method: str, url: str, data=None, params=None, headers=None):
         try:
-            with aiohttp.Timeout(self.kwargs['timeout']):
-                response = yield from self._session.request(method, url, data=data, params=params, headers=headers)
-                response.raise_for_status()
+            response = yield from self._session.request(method, url, data=data, params=params, headers=headers)
+            response.raise_for_status()
         except (aiohttp.ClientError, asyncio.TimeoutError):
             raise FetchError()
         else:
