@@ -130,6 +130,6 @@ endif
 
 pip = $(venv)/bin/pip $(f_quiet) $(f_verbose)
 pip-compile = $(venv)/bin/pip-compile
-pytest = $(venv)/bin/pytest $(f_quiet) $(f_verbose)
+pytest = $(venv)/bin/pytest -rs $(f_quiet) $(f_verbose)
 
 ### </ aliases > ###

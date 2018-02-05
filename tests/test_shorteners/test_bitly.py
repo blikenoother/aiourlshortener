@@ -2,9 +2,17 @@ import aiourlshortener.shorteners.bitly
 
 import tests.test_shorteners
 from tests.utils import URLpair
-from tests.credentials import CREDENTIALS
+from tests.credentials import CREDENTIALS, check_for_credentials
 
 
+@check_for_credentials(
+    provider='Bitly',
+    credentials_hint=(
+        'Navigate to '
+        'https://bitly.com/a/oauth_apps'
+        ' -> "Generic Access Token"'
+    )
+)
 class BitlyTester(tests.test_shorteners.ShortenerTester):
     provider = 'Bitly'
     cls = aiourlshortener.shorteners.bitly.Bitly
