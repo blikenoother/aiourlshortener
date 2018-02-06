@@ -1,22 +1,18 @@
+import importlib
 import inspect
 from asyncio import coroutine
-from importlib.machinery import SourceFileLoader
 import os
 
 from .base import BaseShortener
 from ..exceptions import UnknownAioUrlShortenerError
 from ..utils import url_validator
 
-_shorten_class = {}
 _path = os.path.dirname(os.path.realpath(__file__))
 for file in os.listdir(_path):
     if file.startswith('__') or file == 'base.py':
         continue
-    _shorten = SourceFileLoader('aiourlshortener.shorteners.', '{}/{}'.format(_path, file)).load_module()
-    for attr in dir(_shorten):
-        tmp_cls = getattr(_shorten, attr)
-        if attr != 'BaseShortener' and inspect.isclass(tmp_cls) and issubclass(tmp_cls, BaseShortener) and not inspect.isabstract(tmp_cls):
-            _shorten_class[attr] = tmp_cls
+    importlib.import_module('.%s' % file[:-3],      # strip `.py`
+                            package='aiourlshortener.shorteners')
 
 __all__ = ['Shorteners', 'Shortener']
 
@@ -36,12 +32,16 @@ class Shortener(object):
         self.shorten = None
         self.expanded = None
 
-        if inspect.isclass(engine) and issubclass(engine, BaseShortener) and not inspect.isabstract(engine):
+        nonabstract_subclasses = BaseShortener.nonabstract_subclasses()
+
+        if engine in nonabstract_subclasses.values():
             self.engine = engine.__name__
             self._class = engine
-        elif engine in _shorten_class:
+
+        elif engine in nonabstract_subclasses:
             self.engine = engine
-            self._class = _shorten_class[self.engine]
+            self._class = nonabstract_subclasses[engine]
+
         else:
             raise UnknownAioUrlShortenerError('Please enter a valid shortener. {} class does not exist'.
                                               format(engine))

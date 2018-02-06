@@ -1,5 +1,6 @@
 from abc import abstractmethod, ABC
 import asyncio
+import inspect
 import aiohttp
 from asyncio import coroutine
 
@@ -58,6 +59,18 @@ class BaseShortener(ABC):
     def __del__(self):
         if self._session is not None and not self._session.closed:
             self._session.close()
+
+    @classmethod
+    def _get_subclasses(cls):
+        yield cls
+        for sub_cls in cls.__subclasses__():
+            yield from sub_cls._get_subclasses()
+
+    @classmethod
+    def nonabstract_subclasses(cls):
+        return {cls.__name__: cls
+                for cls in cls._get_subclasses()
+                if not inspect.isabstract(cls)}
 
     @classmethod
     def __subclasshook__(cls, c):
